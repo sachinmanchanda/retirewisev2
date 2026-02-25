@@ -8,6 +8,15 @@ async function startServer() {
   const app = express();
   const PORT = 3000;
 
+  // Set server timeout to 5 minutes (300,000 ms)
+  app.use((req, res, next) => {
+    res.setTimeout(300000, () => {
+      console.log('Request has timed out.');
+      res.status(408).send('Request has timed out.');
+    });
+    next();
+  });
+
   app.use(express.json());
 
   // API health check

@@ -9,7 +9,7 @@ export async function getRetirementAdvice(
 ) {
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 min timeout
+    const timeoutId = setTimeout(() => controller.abort(), 300000); // 5 min timeout
 
     const response = await fetch("/api/advice", {
       method: "POST",
