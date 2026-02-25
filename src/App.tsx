@@ -12,6 +12,7 @@ import { CalculatorHub } from './components/CalculatorHub';
 import { FDCalculator } from './components/FDCalculator';
 import { EMICalculator } from './components/EMICalculator';
 import { ExpensesCalculator } from './components/ExpensesCalculator';
+import { SIPCalculator } from './components/SIPCalculator';
 import { LearningHub } from './components/LearningHub';
 import { getRetirementAdvice } from './services/gemini';
 import { Sparkles, ArrowRight, Info, AlertCircle, CheckCircle2, Loader2, Table as TableIcon, TrendingUp as ChartIcon, Globe, BookOpen } from 'lucide-react';
@@ -285,6 +286,8 @@ export default function App() {
             <EMICalculator key="emi" onBack={() => setCurrentPage('calculators')} currencySymbol={selectedCountry.currencySymbol} />
           ) : currentPage === 'expenses' ? (
             <ExpensesCalculator key="expenses" onBack={() => setCurrentPage('calculators')} currencySymbol={selectedCountry.currencySymbol} />
+          ) : currentPage === 'sip' ? (
+            <SIPCalculator key="sip" onBack={() => setCurrentPage('calculators')} currencySymbol={selectedCountry.currencySymbol} />
           ) : currentPage === 'learning' ? (
             <LearningHub key="learning" onBack={() => setCurrentPage('retirement')} />
           ) : (
@@ -306,6 +309,7 @@ export default function App() {
                     <div className="flex flex-wrap gap-2 mb-8">
                       {[
                         { name: 'FD/RD', id: 'fd-rd' },
+                        { name: 'SIP', id: 'sip' },
                         { name: 'Loan EMI', id: 'emi' },
                         { name: 'Expenses', id: 'expenses' },
                         { name: 'Investments', id: 'learning' }
@@ -547,6 +551,7 @@ export default function App() {
               <h4 className="text-xs font-bold text-zinc-900 uppercase tracking-widest mb-6">Calculators</h4>
               <ul className="space-y-4">
                 <li><button onClick={() => setCurrentPage('fd-rd')} className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors">FD/RD Calculator</button></li>
+                <li><button onClick={() => setCurrentPage('sip')} className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors">SIP Calculator</button></li>
                 <li><button onClick={() => setCurrentPage('emi')} className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors">Loan EMI Calculator</button></li>
                 <li><button onClick={() => setCurrentPage('expenses')} className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors">Expenses Calculator</button></li>
               </ul>

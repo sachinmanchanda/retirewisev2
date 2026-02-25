@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Landmark, CreditCard, Wallet, ArrowRight, Calculator } from 'lucide-react';
+import { Landmark, CreditCard, Wallet, ArrowRight, Calculator, TrendingUp } from 'lucide-react';
 import { Page } from '../types';
 
 interface Props {
@@ -36,6 +36,13 @@ export const CalculatorHub: React.FC<Props> = ({ onSelect }) => {
       description: 'Track and categorize your monthly spending to find saving opportunities.',
       icon: <Wallet className="text-amber-500" size={24} />,
       color: 'bg-amber-50'
+    },
+    {
+      id: 'sip' as Page,
+      title: 'SIP Calculator',
+      description: 'Calculate returns on your monthly Systematic Investment Plans with step-up options.',
+      icon: <TrendingUp className="text-indigo-500" size={24} />,
+      color: 'bg-indigo-50'
     }
   ];
 
