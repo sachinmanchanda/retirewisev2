@@ -307,10 +307,7 @@ export default function App() {
               <div className="lg:col-span-5 space-y-8">
                 <section>
                   <div className="mb-6">
-                    <h1 className="text-4xl font-bold tracking-tight mb-2">Plan your future.</h1>
-                    <p className="text-zinc-500 mb-6">Adjust your details to see how your retirement savings will grow over time in {selectedCountry.name}.</p>
-                    
-                    <div className="flex flex-wrap gap-2 mb-8">
+                    <div className="flex flex-wrap gap-2 mb-6">
                       {[
                         { name: 'FD/RD', id: 'fd-rd' },
                         { name: 'SIP', id: 'sip' },
@@ -327,6 +324,8 @@ export default function App() {
                         </button>
                       ))}
                     </div>
+                    <h1 className="text-4xl font-bold tracking-tight mb-2">Plan your future.</h1>
+                    <p className="text-zinc-500">Adjust your details to see how your retirement savings will grow over time in {selectedCountry.name}.</p>
                   </div>
                   <RetirementForm 
                     data={data} 
