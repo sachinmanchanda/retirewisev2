@@ -121,7 +121,11 @@ export default function App() {
     return points;
   }, [data]);
 
-  const finalBalance = projection.length > 0 ? projection[projection.length - 1].balance : 0;
+  const finalBalance = useMemo(() => {
+    if (projection.length === 0) return 0;
+    const lastPoint = projection[projection.length - 1];
+    return lastPoint.balance - lastPoint.expenses;
+  }, [projection]);
   const isSuccessful = finalBalance > 0;
   const peakBalance = projection.length > 0 ? Math.max(...projection.map(p => p.balance)) : 0;
 
