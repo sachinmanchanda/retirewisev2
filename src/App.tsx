@@ -12,6 +12,7 @@ import { getRetirementAdvice } from './services/gemini';
 import { Sparkles, ArrowRight, Info, AlertCircle, CheckCircle2, Loader2, Table as TableIcon, TrendingUp as ChartIcon, Globe } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
+import { Analytics } from '@vercel/analytics/react';
 
 const DEFAULT_DATA: RetirementData = {
   currentAge: 30,
@@ -465,6 +466,7 @@ export default function App() {
           </p>
         </div>
       </footer>
+      <Analytics />
     </div>
   );
 }
