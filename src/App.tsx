@@ -24,7 +24,7 @@ const DEFAULT_DATA: RetirementData = {
   retirementAge: 60,
   currentSavings: 50000,
   monthlyContribution: 1000,
-  contributionType: 'step-up',
+  contributionType: 'fixed',
   stepUpRate: 5,
   expectedReturn: 9,
   inflationRate: 5,
