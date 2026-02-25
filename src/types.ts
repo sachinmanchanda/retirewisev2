@@ -25,7 +25,7 @@ export interface RetirementData {
   stepUpRate: number;
   expectedReturn: number;
   inflationRate: number;
-  retirementSpending: number;
+  monthlySpending: number;
   lifeExpectancy: number;
   strategy: RetirementStrategy;
   blockSize: number;

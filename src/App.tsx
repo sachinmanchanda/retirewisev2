@@ -28,7 +28,7 @@ const DEFAULT_DATA: RetirementData = {
   stepUpRate: 5,
   expectedReturn: 9,
   inflationRate: 5,
-  retirementSpending: 60000,
+  monthlySpending: 5000,
   lifeExpectancy: 90,
   strategy: 'normal',
   blockSize: 5,
@@ -47,7 +47,7 @@ export default function App() {
   const projection = useMemo(() => {
     const points: ProjectionPoint[] = [];
     let currentBalance = data.currentSavings;
-    let currentAnnualSpending = data.retirementSpending;
+    let currentAnnualSpending = data.monthlySpending * 12;
     let currentMonthlyContribution = data.monthlyContribution;
     
     // Bucket strategy state
@@ -133,7 +133,7 @@ export default function App() {
     const returns = data.expectedReturn / 100;
     
     // Annual spending at the start of retirement (inflated from today)
-    const initialRetirementSpending = data.retirementSpending * Math.pow(1 + inflation, data.retirementAge - data.currentAge);
+    const initialRetirementSpending = (data.monthlySpending * 12) * Math.pow(1 + inflation, data.retirementAge - data.currentAge);
     
     // Real rate of return for the Equity portion
     const realRate = (1 + returns) / (1 + inflation) - 1;

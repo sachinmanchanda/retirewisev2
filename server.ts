@@ -44,7 +44,7 @@ async function startServer() {
         Monthly Contribution: ${country.currencySymbol}${data.monthlyContribution} (${data.contributionType === 'step-up' ? `Step-up: Increases by ${data.stepUpRate}% annually` : 'Fixed amount'})
         Expected Annual Return: ${data.expectedReturn}%
         Expected Inflation: ${data.inflationRate}%
-        Planned Annual Spending in Retirement: ${country.currencySymbol}${data.retirementSpending} (Current Value)
+        Planned Spending in Retirement: ${country.currencySymbol}${data.monthlySpending}/month (${country.currencySymbol}${data.monthlySpending * 12}/year) (Current Value)
         Life Expectancy: ${data.lifeExpectancy}
         
         Calculated Metrics:
