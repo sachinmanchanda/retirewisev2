@@ -131,7 +131,7 @@ export const RetirementForm: React.FC<Props> = ({ data, onChange, currencySymbol
             </h3>
             <div className="grid grid-cols-2 gap-4">
               <InputGroup label="Exp. Return (%)" name="expectedReturn" icon={TrendingUp} value={data.expectedReturn} onChange={handleChange} step={0.1} />
-              <InputGroup label="Inflation (%)" name="inflationRate" icon={TrendingUp} value={data.inflationRate} onChange={handleChange} step={0.1} />
+              <InputGroup label="Exp. Inflation (%)" name="inflationRate" icon={TrendingUp} value={data.inflationRate} onChange={handleChange} step={0.1} />
             </div>
           </div>
         </div>
