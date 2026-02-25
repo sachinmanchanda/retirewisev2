@@ -40,6 +40,8 @@ export interface ProjectionPoint {
   isRetirement: boolean;
 }
 
+export type Page = 'retirement' | 'calculators' | 'fd-rd' | 'emi' | 'expenses' | 'learning';
+
 export interface AIAdvice {
   summary: string;
   recommendations: string[];

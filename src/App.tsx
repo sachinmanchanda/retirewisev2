@@ -4,15 +4,19 @@
  */
 
 import { useState, useMemo, useEffect } from 'react';
-import { RetirementData, ProjectionPoint, COUNTRIES, Country } from './types';
+import { Page, RetirementData, ProjectionPoint, COUNTRIES, Country } from './types';
 import { RetirementForm } from './components/RetirementForm';
 import { RetirementChart } from './components/RetirementChart';
 import { StrategyGuide } from './components/StrategyGuide';
+import { CalculatorHub } from './components/CalculatorHub';
+import { FDCalculator } from './components/FDCalculator';
+import { EMICalculator } from './components/EMICalculator';
+import { ExpensesCalculator } from './components/ExpensesCalculator';
+import { LearningHub } from './components/LearningHub';
 import { getRetirementAdvice } from './services/gemini';
-import { Sparkles, ArrowRight, Info, AlertCircle, CheckCircle2, Loader2, Table as TableIcon, TrendingUp as ChartIcon, Globe } from 'lucide-react';
+import { Sparkles, ArrowRight, Info, AlertCircle, CheckCircle2, Loader2, Table as TableIcon, TrendingUp as ChartIcon, Globe, BookOpen } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
-import { Analytics } from '@vercel/analytics/react';
 
 const DEFAULT_DATA: RetirementData = {
   currentAge: 30,
@@ -30,6 +34,7 @@ const DEFAULT_DATA: RetirementData = {
 };
 
 export default function App() {
+  const [currentPage, setCurrentPage] = useState<Page>('retirement');
   const [data, setData] = useState<RetirementData>(DEFAULT_DATA);
   const [selectedCountry, setSelectedCountry] = useState<Country>(COUNTRIES[0]);
   const [advice, setAdvice] = useState<string | null>(null);
@@ -220,13 +225,27 @@ export default function App() {
       {/* Header */}
       <header className="border-b border-zinc-100 sticky top-0 bg-white/80 backdrop-blur-md z-50">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 cursor-pointer" onClick={() => setCurrentPage('retirement')}>
             <div className="w-8 h-8 bg-zinc-900 rounded-lg flex items-center justify-center">
               <ArrowRight className="text-white -rotate-45" size={18} />
             </div>
             <span className="font-bold text-lg tracking-tight">RetireWise</span>
           </div>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-8">
+            <nav className="hidden md:flex items-center gap-6">
+              <button 
+                onClick={() => setCurrentPage('calculators')}
+                className={`text-xs font-bold transition-colors uppercase tracking-widest ${currentPage === 'calculators' ? 'text-zinc-900' : 'text-zinc-400 hover:text-zinc-900'}`}
+              >
+                Calculators
+              </button>
+              <button 
+                onClick={() => setCurrentPage('learning')}
+                className={`text-xs font-bold transition-colors uppercase tracking-widest ${currentPage === 'learning' ? 'text-zinc-900' : 'text-zinc-400 hover:text-zinc-900'}`}
+              >
+                Learning
+              </button>
+            </nav>
             <div className="flex items-center gap-2 bg-zinc-50 border border-zinc-200 rounded-full px-3 py-1.5">
               <Globe size={14} className="text-zinc-400" />
               <select 
@@ -258,6 +277,16 @@ export default function App() {
         <AnimatePresence mode="wait">
           {showGuide ? (
             <StrategyGuide key="guide" onBack={() => setShowGuide(false)} />
+          ) : currentPage === 'calculators' ? (
+            <CalculatorHub key="hub" onSelect={setCurrentPage} />
+          ) : currentPage === 'fd-rd' ? (
+            <FDCalculator key="fd" onBack={() => setCurrentPage('calculators')} currencySymbol={selectedCountry.currencySymbol} />
+          ) : currentPage === 'emi' ? (
+            <EMICalculator key="emi" onBack={() => setCurrentPage('calculators')} currencySymbol={selectedCountry.currencySymbol} />
+          ) : currentPage === 'expenses' ? (
+            <ExpensesCalculator key="expenses" onBack={() => setCurrentPage('calculators')} currencySymbol={selectedCountry.currencySymbol} />
+          ) : currentPage === 'learning' ? (
+            <LearningHub key="learning" onBack={() => setCurrentPage('retirement')} />
           ) : (
             <motion.div 
               key="calculator"
@@ -272,7 +301,24 @@ export default function App() {
                 <section>
                   <div className="mb-6">
                     <h1 className="text-4xl font-bold tracking-tight mb-2">Plan your future.</h1>
-                    <p className="text-zinc-500">Adjust your details to see how your retirement savings will grow over time in {selectedCountry.name}.</p>
+                    <p className="text-zinc-500 mb-6">Adjust your details to see how your retirement savings will grow over time in {selectedCountry.name}.</p>
+                    
+                    <div className="flex flex-wrap gap-2 mb-8">
+                      {[
+                        { name: 'FD/RD', id: 'fd-rd' },
+                        { name: 'Loan EMI', id: 'emi' },
+                        { name: 'Expenses', id: 'expenses' },
+                        { name: 'Investments', id: 'learning' }
+                      ].map((tool) => (
+                        <button 
+                          key={tool.id}
+                          onClick={() => setCurrentPage(tool.id as Page)}
+                          className="px-3 py-1.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-600 text-[10px] font-bold rounded-full transition-all uppercase tracking-widest"
+                        >
+                          {tool.name}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                   <RetirementForm 
                     data={data} 
@@ -482,20 +528,50 @@ export default function App() {
       </main>
 
 
-      <footer className="border-t border-zinc-100 py-12 mt-12">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-2 opacity-50">
-            <div className="w-6 h-6 bg-zinc-900 rounded flex items-center justify-center">
-              <ArrowRight className="text-white -rotate-45" size={12} />
+      <footer className="border-t border-zinc-100 py-16 mt-12 bg-zinc-50/30">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+            <div className="col-span-1 md:col-span-2">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 bg-zinc-900 rounded-lg flex items-center justify-center">
+                  <ArrowRight className="text-white -rotate-45" size={16} />
+                </div>
+                <span className="font-bold text-lg tracking-tight">RetireWise</span>
+              </div>
+              <p className="text-sm text-zinc-500 max-w-sm leading-relaxed">
+                Empowering your retirement journey with data-driven insights and personalized financial strategies. Plan today for a secure tomorrow.
+              </p>
             </div>
-            <span className="font-bold text-sm tracking-tight">RetireWise</span>
+            
+            <div>
+              <h4 className="text-xs font-bold text-zinc-900 uppercase tracking-widest mb-6">Calculators</h4>
+              <ul className="space-y-4">
+                <li><button onClick={() => setCurrentPage('fd-rd')} className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors">FD/RD Calculator</button></li>
+                <li><button onClick={() => setCurrentPage('emi')} className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors">Loan EMI Calculator</button></li>
+                <li><button onClick={() => setCurrentPage('expenses')} className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors">Expenses Calculator</button></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-xs font-bold text-zinc-900 uppercase tracking-widest mb-6">Learning</h4>
+              <ul className="space-y-4">
+                <li><button onClick={() => setCurrentPage('learning')} className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors">Understanding Investments</button></li>
+                <li><button onClick={() => setCurrentPage('learning')} className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors">Retirement Basics</button></li>
+                <li><button onClick={() => setCurrentPage('learning')} className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors">Tax Planning</button></li>
+              </ul>
+            </div>
           </div>
-          <p className="text-xs text-zinc-400 text-center md:text-right max-w-md">
-            This tool provides estimates for informational purposes only. Actual results will vary based on market performance, taxes, and other factors. Consult a financial professional for personalized advice.
-          </p>
+
+          <div className="pt-8 border-t border-zinc-100 flex flex-col md:flex-row justify-between items-center gap-6">
+            <p className="text-[10px] text-zinc-400 uppercase tracking-widest">
+              © 2024 RetireWise. All rights reserved.
+            </p>
+            <p className="text-[10px] text-zinc-400 text-center md:text-right max-w-md leading-relaxed">
+              Estimates provided for informational purposes only. Actual results vary based on market performance and taxes. Consult a professional.
+            </p>
+          </div>
         </div>
       </footer>
-      <Analytics />
     </div>
   );
 }
