@@ -56,8 +56,9 @@ export default function App() {
       const isRetirement = age >= data.retirementAge;
       
       // Bucket Strategy: Rebalance at start of bucket
-      if (data.strategy === 'block' && isRetirement && (age - data.retirementAge) % data.blockSize === 0) {
-        const neededCorpus = currentAnnualSpending * data.blockSize;
+      const effectiveBlockSize = Math.max(1, data.blockSize);
+      if (data.strategy === 'block' && isRetirement && (age - data.retirementAge) % effectiveBlockSize === 0) {
+        const neededCorpus = currentAnnualSpending * effectiveBlockSize;
         const transfer = Math.min(equityBalance, neededCorpus);
         fdCorpus += transfer;
         equityBalance -= transfer;
@@ -141,7 +142,7 @@ export default function App() {
       // Each bucket covers 'blockSize' years.
       // Money for a bucket stays in Equity until it's needed, then moves to FD (0% real return).
       let totalCorpus = 0;
-      const blockSize = data.blockSize;
+      const blockSize = Math.max(1, data.blockSize);
       
       for (let year = 0; year < yearsInRetirement; year += blockSize) {
         const currentBlockSize = Math.min(blockSize, yearsInRetirement - year);
