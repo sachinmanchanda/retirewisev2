@@ -8,11 +8,15 @@ export async function getRetirementAdvice(
   additionalSavings: { fixed: number; stepUp: number }
 ) {
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
+
     const response = await fetch("/api/advice", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      signal: controller.signal,
       body: JSON.stringify({
         data,
         country,
@@ -20,6 +24,8 @@ export async function getRetirementAdvice(
         additionalSavings,
       }),
     });
+
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       const errorData = await response.json();

@@ -196,9 +196,22 @@ export default function App() {
 
   const handleGetAdvice = async () => {
     setIsGeneratingAdvice(true);
-    const result = await getRetirementAdvice(data, selectedCountry, requiredCorpusAtRetirement, additionalSavings);
-    setAdvice(result);
-    setIsGeneratingAdvice(false);
+    try {
+      let result = await getRetirementAdvice(data, selectedCountry, requiredCorpusAtRetirement, additionalSavings);
+      
+      // If it failed, try one more time
+      if (result.startsWith("Error:")) {
+        console.log("First attempt failed, retrying...");
+        result = await getRetirementAdvice(data, selectedCountry, requiredCorpusAtRetirement, additionalSavings);
+      }
+      
+      setAdvice(result);
+    } catch (err) {
+      console.error("Advice generation failed:", err);
+      setAdvice("Error: Failed to generate advice. Please try again later.");
+    } finally {
+      setIsGeneratingAdvice(false);
+    }
   };
 
   return (
@@ -427,6 +440,22 @@ export default function App() {
                     </motion.section>
                   )}
                 </AnimatePresence>
+
+                {isGeneratingAdvice && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-zinc-50 border border-zinc-200 rounded-3xl p-12 flex flex-col items-center text-center"
+                  >
+                    <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-4">
+                      <Loader2 className="text-zinc-900 animate-spin" size={24} />
+                    </div>
+                    <h3 className="font-bold mb-2">Consulting AI Advisor...</h3>
+                    <p className="text-sm text-zinc-500 max-w-xs">
+                      Analyzing your retirement data and crafting a personalized strategy. Please wait a moment.
+                    </p>
+                  </motion.div>
+                )}
 
                 {!advice && !isGeneratingAdvice && (
                   <div className="bg-zinc-50 border border-dashed border-zinc-300 rounded-3xl p-12 flex flex-col items-center text-center">
