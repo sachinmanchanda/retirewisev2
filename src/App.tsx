@@ -30,7 +30,7 @@ const DEFAULT_DATA: RetirementData = {
   inflationRate: 5,
   monthlySpending: 5000,
   lifeExpectancy: 90,
-  strategy: 'normal',
+  strategy: 'block',
   blockSize: 5,
 };
 
