@@ -44,6 +44,11 @@ export default function App() {
 
   const [view, setView] = useState<'chart' | 'table'>('chart');
 
+  // Scroll to top on page change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentPage, showGuide]);
+
   const projection = useMemo(() => {
     const points: ProjectionPoint[] = [];
     let currentBalance = data.currentSavings;

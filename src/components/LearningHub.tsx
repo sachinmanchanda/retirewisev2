@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, BookOpen, TrendingUp, ShieldCheck, PieChart, ChevronLeft } from 'lucide-react';
 
@@ -10,6 +10,11 @@ type ArticleId = 'asset-allocation' | 'compounding' | 'risk-management';
 
 export const LearningHub: React.FC<Props> = ({ onBack }) => {
   const [selectedArticle, setSelectedArticle] = useState<ArticleId | null>(null);
+
+  // Scroll to top when selecting an article
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [selectedArticle]);
 
   const articles = [
     {
