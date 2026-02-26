@@ -60,7 +60,7 @@ export const RetirementForm: React.FC<Props> = ({ data, onChange, currencySymbol
   return (
     <div className="space-y-6">
       {/* Strategy Section */}
-      <div className="p-6 bg-zinc-50/50 rounded-2xl border border-zinc-200">
+      <div className="p-6 bg-white/80 backdrop-blur-sm rounded-2xl border border-zinc-200">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-sm font-bold text-zinc-900 flex items-center gap-2">
             <Layers size={18} /> Withdrawal Strategy
@@ -112,7 +112,7 @@ export const RetirementForm: React.FC<Props> = ({ data, onChange, currencySymbol
       </div>
 
       {/* Inputs Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-zinc-50/50 rounded-2xl border border-zinc-200">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white/80 backdrop-blur-sm rounded-2xl border border-zinc-200">
         <div className="space-y-8">
           <div className="space-y-6">
             <h3 className="text-sm font-bold text-zinc-900 flex items-center gap-2">

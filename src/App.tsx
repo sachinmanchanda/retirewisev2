@@ -226,7 +226,13 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-zinc-900 font-sans selection:bg-zinc-900 selection:text-white">
+    <div className="min-h-screen bg-zinc-50 text-zinc-900 font-sans selection:bg-zinc-900 selection:text-white relative">
+      {/* Background Image */}
+      <div 
+        className="fixed inset-0 z-0 opacity-20 pointer-events-none bg-cover bg-center bg-fixed"
+        style={{ backgroundImage: "url('https://picsum.photos/id/684/1920/1080')" }}
+      />
+      
       {/* Header */}
       <header className="border-b border-zinc-100 sticky top-0 bg-white/80 backdrop-blur-md z-50">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -278,7 +284,7 @@ export default function App() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 py-12">
+      <main className="max-w-7xl mx-auto px-6 py-12 relative z-10">
         <AnimatePresence mode="wait">
           {showGuide ? (
             <StrategyGuide key="guide" onBack={() => setShowGuide(false)} />
