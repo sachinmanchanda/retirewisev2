@@ -30,13 +30,12 @@ async function startServer() {
       const { data, country, requiredCorpus, additionalSavings } = req.body;
 
       const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey || apiKey === "AI Studio Free Tier") {
+      if (!apiKey) {
         return res.status(500).json({ 
-          error: "Gemini API Key is not configured on the server. Please set GEMINI_API_KEY in Vercel environment variables." 
+          error: "GEMINI_API_KEY is not set in the server environment variables." 
         });
       }
 
-      const { GoogleGenAI } = await import("@google/genai");
       const ai = new GoogleGenAI({ apiKey: apiKey.trim() });
       
       const prompt = `
