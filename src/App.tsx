@@ -307,7 +307,7 @@ export default function App() {
             </div>
             <span className="font-bold text-lg tracking-tight">RetireWise</span>
           </div>
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-3 md:gap-8">
             <nav className="hidden md:flex items-center gap-6">
               <button 
                 onClick={() => setCurrentPage('calculators')}
@@ -322,7 +322,7 @@ export default function App() {
                 Learning
               </button>
             </nav>
-            <div className="flex items-center gap-2 bg-zinc-50 border border-zinc-200 rounded-full px-3 py-1.5">
+            <div className="flex items-center gap-1.5 bg-zinc-50 border border-zinc-200 rounded-full px-2 md:px-3 py-1.5">
               <Globe size={14} className="text-zinc-400" />
               <select 
                 value={selectedCountry.code}
@@ -330,7 +330,7 @@ export default function App() {
                   const country = COUNTRIES.find(c => c.code === e.target.value);
                   if (country) setSelectedCountry(country);
                 }}
-                className="bg-transparent text-xs font-semibold outline-none cursor-pointer pr-1"
+                className="bg-transparent text-[10px] md:text-xs font-semibold outline-none cursor-pointer pr-1"
               >
                 {COUNTRIES.map(c => (
                   <option key={c.code} value={c.code}>{c.name} ({c.currencyCode})</option>
@@ -340,10 +340,11 @@ export default function App() {
             <button 
               onClick={handleGetAdvice}
               disabled={isGeneratingAdvice}
-              className="flex items-center gap-2 bg-zinc-900 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-zinc-800 transition-all disabled:opacity-50"
+              className="flex items-center gap-2 bg-zinc-900 text-white px-3 md:px-4 py-2 rounded-full text-xs md:text-sm font-medium hover:bg-zinc-800 transition-all disabled:opacity-50"
             >
               {isGeneratingAdvice ? <Loader2 className="animate-spin" size={16} /> : <Sparkles size={16} />}
-              AI Advisor
+              <span className="hidden sm:inline">AI Advisor</span>
+              <span className="sm:hidden">AI</span>
             </button>
           </div>
         </div>
@@ -613,9 +614,9 @@ export default function App() {
                     </p>
                     <button 
                       onClick={handleGetAdvice}
-                      className="text-sm font-bold text-zinc-900 hover:underline flex items-center gap-2"
+                      className="text-sm font-bold text-emerald-600 hover:text-emerald-700 hover:underline flex items-center gap-2 transition-colors"
                     >
-                      Generate Insights <ArrowRight size={14} />
+                      Generate Insights with AI <ArrowRight size={14} />
                     </button>
                   </div>
                 )}
