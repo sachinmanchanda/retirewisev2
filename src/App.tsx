@@ -14,9 +14,10 @@ import { FDCalculator } from './components/FDCalculator';
 import { EMICalculator } from './components/EMICalculator';
 import { ExpensesCalculator } from './components/ExpensesCalculator';
 import { SIPCalculator } from './components/SIPCalculator';
+import { GoalCalculator } from './components/GoalCalculator';
 import { LearningHub } from './components/LearningHub';
 import { getRetirementAdvice } from './services/gemini';
-import { Sparkles, ArrowRight, Info, AlertCircle, CheckCircle2, Loader2, Table as TableIcon, TrendingUp as ChartIcon, Globe, BookOpen } from 'lucide-react';
+import { Sparkles, ArrowRight, Info, AlertCircle, CheckCircle2, Loader2, Table as TableIcon, TrendingUp as ChartIcon, Globe, BookOpen, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
 
@@ -83,6 +84,11 @@ export default function App() {
         return {
           title: 'Monthly Expense Tracker',
           description: 'Analyze and categorize your monthly spending to better plan your retirement budget.',
+        };
+      case 'goal':
+        return {
+          title: 'Goal Based Financial Planner',
+          description: 'Calculate the future cost of your life goals and find out how much you need to save today.',
         };
       case 'learning':
         return {
@@ -357,6 +363,8 @@ export default function App() {
             <ExpensesCalculator key="expenses" onBack={() => setCurrentPage('calculators')} currencySymbol={selectedCountry.currencySymbol} />
           ) : currentPage === 'sip' ? (
             <SIPCalculator key="sip" onBack={() => setCurrentPage('calculators')} currencySymbol={selectedCountry.currencySymbol} />
+          ) : currentPage === 'goal' ? (
+            <GoalCalculator key="goal" onBack={() => setCurrentPage('calculators')} currencySymbol={selectedCountry.currencySymbol} />
           ) : currentPage === 'learning' ? (
             <LearningHub key="learning" onBack={() => setCurrentPage('retirement')} />
           ) : (
@@ -576,6 +584,24 @@ export default function App() {
                   </motion.div>
                 )}
 
+                <div className="bg-indigo-50 border border-indigo-100 rounded-3xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 mb-8">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-indigo-500 rounded-xl flex items-center justify-center shrink-0">
+                      <Target className="text-white" size={20} />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-indigo-900">Have a specific goal in mind?</h4>
+                      <p className="text-sm text-indigo-700/70">Try our Goal based planner for education, marriage, or dream home.</p>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => setCurrentPage('goal')}
+                    className="bg-indigo-600 text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-indigo-700 transition-all shrink-0"
+                  >
+                    Try Goal Planner
+                  </button>
+                </div>
+
                 {!advice && !isGeneratingAdvice && (
                   <div className="bg-zinc-50 border border-dashed border-zinc-300 rounded-3xl p-12 flex flex-col items-center text-center">
                     <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-4">
@@ -622,6 +648,7 @@ export default function App() {
                 <li><button onClick={() => setCurrentPage('sip')} className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors">SIP Calculator</button></li>
                 <li><button onClick={() => setCurrentPage('emi')} className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors">Loan EMI Calculator</button></li>
                 <li><button onClick={() => setCurrentPage('expenses')} className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors">Expenses Calculator</button></li>
+                <li><button onClick={() => setCurrentPage('goal')} className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors">Goal Based Planner</button></li>
               </ul>
             </div>
 
@@ -630,7 +657,6 @@ export default function App() {
               <ul className="space-y-4">
                 <li><button onClick={() => setCurrentPage('learning')} className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors">Understanding Investments</button></li>
                 <li><button onClick={() => setCurrentPage('learning')} className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors">Retirement Basics</button></li>
-                <li><button onClick={() => setCurrentPage('learning')} className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors">Tax Planning</button></li>
               </ul>
             </div>
           </div>

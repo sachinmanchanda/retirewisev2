@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Landmark, CreditCard, Wallet, ArrowRight, Calculator, TrendingUp } from 'lucide-react';
+import { Landmark, CreditCard, Wallet, ArrowRight, Calculator, TrendingUp, Target } from 'lucide-react';
 import { Page } from '../types';
 
 interface Props {
@@ -43,6 +43,13 @@ export const CalculatorHub: React.FC<Props> = ({ onSelect }) => {
       description: 'Calculate returns on your monthly Systematic Investment Plans with step-up options.',
       icon: <TrendingUp className="text-indigo-500" size={24} />,
       color: 'bg-indigo-50'
+    },
+    {
+      id: 'goal' as Page,
+      title: 'Goal Based Planner',
+      description: 'Plan for specific life goals like education, marriage, or a dream home.',
+      icon: <Target className="text-rose-500" size={24} />,
+      color: 'bg-rose-50'
     }
   ];
 
