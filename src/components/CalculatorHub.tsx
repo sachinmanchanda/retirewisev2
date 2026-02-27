@@ -53,7 +53,7 @@ export const CalculatorHub: React.FC<Props> = ({ onSelect }) => {
         <p className="text-zinc-500">Choose a tool to help you manage your finances and plan for the future.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {calculators.map((calc, index) => (
           <motion.button
             key={calc.id}
@@ -67,17 +67,17 @@ export const CalculatorHub: React.FC<Props> = ({ onSelect }) => {
               {calc.icon}
             </div>
             <div className="space-y-2">
-              <h3 className="text-xl font-bold flex items-center gap-2">
+              <h2 className="text-xl font-bold flex items-center gap-2">
                 {calc.title}
                 <ArrowRight size={16} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
-              </h3>
+              </h2>
               <p className="text-sm text-zinc-500 leading-relaxed">
                 {calc.description}
               </p>
             </div>
           </motion.button>
         ))}
-      </div>
+      </section>
     </div>
   );
 };

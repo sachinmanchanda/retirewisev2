@@ -8,6 +8,7 @@ import { Page, RetirementData, ProjectionPoint, COUNTRIES, Country } from './typ
 import { RetirementForm } from './components/RetirementForm';
 import { RetirementChart } from './components/RetirementChart';
 import { StrategyGuide } from './components/StrategyGuide';
+import { SEO } from './components/SEO';
 import { CalculatorHub } from './components/CalculatorHub';
 import { FDCalculator } from './components/FDCalculator';
 import { EMICalculator } from './components/EMICalculator';
@@ -43,6 +44,58 @@ export default function App() {
   const [showGuide, setShowGuide] = useState(false);
 
   const [view, setView] = useState<'chart' | 'table'>('chart');
+
+  const seoData = useMemo(() => {
+    switch (currentPage) {
+      case 'retirement':
+        return {
+          title: 'Retirement Planner & Calculator',
+          description: 'Plan your financial future with our advanced retirement calculator. Supports bucket strategy, inflation adjustment, and personalized AI advice.',
+          schema: {
+            "@context": "https://schema.org",
+            "@type": "FinancialCalculator",
+            "name": "RetireWise Retirement Planner",
+            "description": "Calculate your retirement corpus and withdrawal strategy.",
+            "url": window.location.href
+          }
+        };
+      case 'calculators':
+        return {
+          title: 'Financial Calculators Hub',
+          description: 'Access a suite of financial tools including FD/RD, SIP, Loan EMI, and Expense calculators to manage your wealth.',
+        };
+      case 'fd-rd':
+        return {
+          title: 'FD & RD Calculator',
+          description: 'Calculate maturity amounts for Fixed Deposits and Recurring Deposits with ease.',
+        };
+      case 'sip':
+        return {
+          title: 'SIP Calculator',
+          description: 'Estimate your wealth gain and maturity amount for your monthly SIP investments.',
+        };
+      case 'emi':
+        return {
+          title: 'Loan EMI Calculator',
+          description: 'Calculate your monthly loan repayments and total interest for home, car, or personal loans.',
+        };
+      case 'expenses':
+        return {
+          title: 'Monthly Expense Tracker',
+          description: 'Analyze and categorize your monthly spending to better plan your retirement budget.',
+        };
+      case 'learning':
+        return {
+          title: 'Financial Learning Center',
+          description: 'Master the fundamentals of wealth creation, compounding, and risk management.',
+        };
+      default:
+        return {
+          title: 'RetireWise',
+          description: 'Empowering your retirement journey with data-driven insights.',
+        };
+    }
+  }, [currentPage]);
 
   // Scroll to top on page change
   useEffect(() => {
@@ -232,6 +285,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-900 font-sans selection:bg-zinc-900 selection:text-white relative">
+      <SEO {...seoData} />
       {/* Background Image */}
       <div 
         className="fixed inset-0 z-0 opacity-20 pointer-events-none bg-cover bg-center bg-fixed"

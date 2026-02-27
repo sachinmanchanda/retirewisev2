@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, BookOpen, TrendingUp, ShieldCheck, PieChart, ChevronLeft } from 'lucide-react';
+import { SEO } from './SEO';
 
 interface Props {
   onBack: () => void;
@@ -10,11 +11,6 @@ type ArticleId = 'asset-allocation' | 'compounding' | 'risk-management';
 
 export const LearningHub: React.FC<Props> = ({ onBack }) => {
   const [selectedArticle, setSelectedArticle] = useState<ArticleId | null>(null);
-
-  // Scroll to top when selecting an article
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [selectedArticle]);
 
   const articles = [
     {
@@ -179,8 +175,30 @@ export const LearningHub: React.FC<Props> = ({ onBack }) => {
 
   const currentArticle = articles.find(a => a.id === selectedArticle);
 
+  // Scroll to top when selecting an article
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [selectedArticle]);
+
   return (
     <div className="max-w-4xl mx-auto py-12 relative z-10">
+      {selectedArticle && currentArticle && (
+        <SEO 
+          title={currentArticle.title} 
+          description={currentArticle.description}
+          type="article"
+          schema={{
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": currentArticle.title,
+            "description": currentArticle.description,
+            "author": {
+              "@type": "Organization",
+              "name": "RetireWise"
+            }
+          }}
+        />
+      )}
       <AnimatePresence mode="wait">
         {!selectedArticle ? (
           <motion.div
@@ -204,7 +222,7 @@ export const LearningHub: React.FC<Props> = ({ onBack }) => {
               <p className="text-zinc-500">Master the fundamentals of wealth creation and retirement planning.</p>
             </div>
 
-            <div className="grid grid-cols-1 gap-6">
+            <section className="grid grid-cols-1 gap-6">
               {articles.map((article, index) => (
                 <motion.div
                   key={article.title}
@@ -219,7 +237,7 @@ export const LearningHub: React.FC<Props> = ({ onBack }) => {
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-center gap-3">
-                      <h3 className="text-xl font-bold">{article.title}</h3>
+                      <h2 className="text-xl font-bold">{article.title}</h2>
                       <span className="px-2 py-0.5 bg-zinc-100 text-zinc-500 text-[10px] font-bold rounded-full uppercase tracking-widest">{article.tag}</span>
                     </div>
                     <p className="text-sm text-zinc-500 leading-relaxed max-w-2xl">
@@ -229,10 +247,10 @@ export const LearningHub: React.FC<Props> = ({ onBack }) => {
                   </div>
                 </motion.div>
               ))}
-            </div>
+            </section>
           </motion.div>
         ) : (
-          <motion.div
+          <motion.article
             key="article"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -275,7 +293,7 @@ export const LearningHub: React.FC<Props> = ({ onBack }) => {
                 Finish Reading
               </button>
             </div>
-          </motion.div>
+          </motion.article>
         )}
       </AnimatePresence>
     </div>

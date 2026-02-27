@@ -60,11 +60,11 @@ export const RetirementForm: React.FC<Props> = ({ data, onChange, currencySymbol
   return (
     <div className="space-y-6">
       {/* Strategy Section */}
-      <div className="p-6 bg-white/80 backdrop-blur-sm rounded-2xl border border-zinc-200">
+      <section className="p-6 bg-white/80 backdrop-blur-sm rounded-2xl border border-zinc-200">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-sm font-bold text-zinc-900 flex items-center gap-2">
+          <h2 className="text-sm font-bold text-zinc-900 flex items-center gap-2">
             <Layers size={18} /> Withdrawal Strategy
-          </h3>
+          </h2>
           {onShowGuide && (
             <button 
               onClick={onShowGuide}
@@ -109,15 +109,15 @@ export const RetirementForm: React.FC<Props> = ({ data, onChange, currencySymbol
             <span className="font-bold text-zinc-700">Bucket Strategy:</span> Every {data.blockSize} years, a corpus is moved to Fixed Deposit (FD) to cover expenses. FD returns match inflation, while the remainder grows in Equity.
           </p>
         )}
-      </div>
+      </section>
 
       {/* Inputs Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white/80 backdrop-blur-sm rounded-2xl border border-zinc-200">
-        <div className="space-y-8">
+        <section className="space-y-8">
           <div className="space-y-6">
-            <h3 className="text-sm font-bold text-zinc-900 flex items-center gap-2">
+            <h2 className="text-sm font-bold text-zinc-900 flex items-center gap-2">
               <User size={18} /> Personal Details
-            </h3>
+            </h2>
             <div className="grid grid-cols-2 gap-4">
               <InputGroup label="Current Age" name="currentAge" icon={Calendar} value={data.currentAge} onChange={handleChange} min={18} max={100} />
               <InputGroup label="Retire Age" name="retirementAge" icon={Calendar} value={data.retirementAge} onChange={handleChange} min={data.currentAge} max={100} />
@@ -125,21 +125,21 @@ export const RetirementForm: React.FC<Props> = ({ data, onChange, currencySymbol
             <InputGroup label="Life Expectancy" name="lifeExpectancy" icon={Calendar} value={data.lifeExpectancy} onChange={handleChange} min={data.retirementAge} max={120} />
           </div>
 
-          <div className="space-y-6 pt-6 border-t border-zinc-200/60">
-            <h3 className="text-sm font-bold text-zinc-900 flex items-center gap-2">
+          <section className="space-y-6 pt-6 border-t border-zinc-200/60">
+            <h2 className="text-sm font-bold text-zinc-900 flex items-center gap-2">
               <TrendingUp size={18} /> Assumptions
-            </h3>
+            </h2>
             <div className="grid grid-cols-2 gap-4">
               <InputGroup label="Exp. Return (%)" name="expectedReturn" icon={TrendingUp} value={data.expectedReturn} onChange={handleChange} step={0.1} />
               <InputGroup label="Exp. Inflation (%)" name="inflationRate" icon={TrendingUp} value={data.inflationRate} onChange={handleChange} step={0.1} />
             </div>
-          </div>
-        </div>
+          </section>
+        </section>
 
-        <div className="space-y-6">
-          <h3 className="text-sm font-bold text-zinc-900 flex items-center gap-2">
+        <section className="space-y-6">
+          <h2 className="text-sm font-bold text-zinc-900 flex items-center gap-2">
             <Wallet size={18} /> Financials
-          </h3>
+          </h2>
           <InputGroup label="Monthly Spending" name="monthlySpending" icon={Wallet} value={data.monthlySpending} onChange={handleChange} />
           <InputGroup label="Current Savings" name="currentSavings" icon={Calculator} value={data.currentSavings} onChange={handleChange} />
           <div className="space-y-1.5">
@@ -173,7 +173,7 @@ export const RetirementForm: React.FC<Props> = ({ data, onChange, currencySymbol
               </div>
             )}
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );
