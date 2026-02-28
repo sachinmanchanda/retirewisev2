@@ -4,7 +4,7 @@
  */
 
 import { useState, useMemo, useEffect } from 'react';
-import { Page, RetirementData, ProjectionPoint, COUNTRIES, Country, AIModel } from './types';
+import { Page, RetirementData, ProjectionPoint, COUNTRIES, Country } from './types';
 import { RetirementForm } from './components/RetirementForm';
 import { RetirementChart } from './components/RetirementChart';
 import { StrategyGuide } from './components/StrategyGuide';
@@ -16,7 +16,7 @@ import { ExpensesCalculator } from './components/ExpensesCalculator';
 import { SIPCalculator } from './components/SIPCalculator';
 import { GoalCalculator } from './components/GoalCalculator';
 import { LearningHub } from './components/LearningHub';
-import { getRetirementAdvice } from './services/gemini';
+import { getRetirementAdvice } from './services/ai';
 import { Sparkles, ArrowRight, Info, AlertCircle, CheckCircle2, Loader2, Table as TableIcon, TrendingUp as ChartIcon, Globe, BookOpen, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
@@ -42,8 +42,8 @@ export default function App() {
   const [selectedCountry, setSelectedCountry] = useState<Country>(COUNTRIES[0]);
   const [advice, setAdvice] = useState<string | null>(null);
   const [isGeneratingAdvice, setIsGeneratingAdvice] = useState(false);
-  const [selectedModel, setSelectedModel] = useState<AIModel>('gemini');
   const [showGuide, setShowGuide] = useState(false);
+  const [aiProvider, setAiProvider] = useState<'gemini' | 'groq'>('groq');
 
   const [view, setView] = useState<'chart' | 'table'>('chart');
 
@@ -276,12 +276,12 @@ export default function App() {
       const retirementPoint = projection.find(p => p.age === data.retirementAge);
       const balanceAtRetirement = retirementPoint ? retirementPoint.balance : 0;
 
-      let result = await getRetirementAdvice(data, selectedCountry, requiredCorpusAtRetirement, balanceAtRetirement, additionalSavings, selectedModel);
+      let result = await getRetirementAdvice(data, selectedCountry, requiredCorpusAtRetirement, balanceAtRetirement, additionalSavings, aiProvider);
       
       // If it failed, try one more time
       if (result.startsWith("Error:")) {
         console.log("First attempt failed, retrying...");
-        result = await getRetirementAdvice(data, selectedCountry, requiredCorpusAtRetirement, balanceAtRetirement, additionalSavings, selectedModel);
+        result = await getRetirementAdvice(data, selectedCountry, requiredCorpusAtRetirement, balanceAtRetirement, additionalSavings, aiProvider);
       }
       
       setAdvice(result);
@@ -344,12 +344,12 @@ export default function App() {
             <div className="flex items-center gap-1.5 bg-zinc-50 border border-zinc-200 rounded-full px-2 md:px-3 py-1.5">
               <Sparkles size={14} className="text-zinc-400" />
               <select 
-                value={selectedModel}
-                onChange={(e) => setSelectedModel(e.target.value as AIModel)}
+                value={aiProvider}
+                onChange={(e) => setAiProvider(e.target.value as 'gemini' | 'groq')}
                 className="bg-transparent text-[10px] md:text-xs font-semibold outline-none cursor-pointer pr-1"
               >
+                <option value="groq">OpenAI</option>
                 <option value="gemini">Gemini</option>
-                <option value="grok">Grok</option>
               </select>
             </div>
             <button 
@@ -577,8 +577,8 @@ export default function App() {
                           <p className="text-xs text-zinc-500">Personalized strategy based on your data</p>
                         </div>
                       </div>
-                      <div className="prose prose-zinc prose-sm max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-p:text-zinc-600 prose-li:text-zinc-600">
-                        <Markdown>{advice}</Markdown>
+                      <div className="text-zinc-600 text-sm leading-relaxed whitespace-pre-wrap">
+                        {advice}
                       </div>
                     </motion.section>
                   )}

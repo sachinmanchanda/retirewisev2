@@ -1,4 +1,4 @@
-import { RetirementData, Country, AIModel } from "../types";
+import { RetirementData, Country } from "../types";
 
 export async function getRetirementAdvice(
   data: RetirementData, 
@@ -6,7 +6,7 @@ export async function getRetirementAdvice(
   requiredCorpus: number,
   balanceAtRetirement: number,
   additionalSavings: { fixed: number; stepUp: number },
-  model: AIModel = 'gemini'
+  provider: "gemini" | "groq" = "groq"
 ) {
   try {
     const response = await fetch("/api/advice", {
@@ -20,7 +20,7 @@ export async function getRetirementAdvice(
         requiredCorpus,
         balanceAtRetirement,
         additionalSavings,
-        model
+        provider,
       }),
     });
 

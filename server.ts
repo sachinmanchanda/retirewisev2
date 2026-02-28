@@ -24,10 +24,10 @@ async function startServer() {
     res.json({ status: "ok" });
   });
 
-  // Secure AI Advisor Endpoint
+  // Secure AI Advice Endpoint (Supports Gemini and Groq)
   app.post("/api/advice", async (req, res) => {
     try {
-      const { data, country, requiredCorpus, balanceAtRetirement, additionalSavings, model = 'gemini' } = req.body;
+      const { data, country, requiredCorpus, balanceAtRetirement, additionalSavings, provider = "groq" } = req.body;
 
       const prompt = `
         As a professional financial advisor, analyze the following retirement plan and provide concise, actionable advice.
@@ -58,49 +58,10 @@ async function startServer() {
         2. 3-4 specific recommendations to improve the outcome, including thoughts on the chosen ${data.strategy} strategy.
         3. A brief risk assessment.
         
-        Format the response as Markdown.
+        Format the response as plain text. Do not use Markdown, bolding, or lists. Use clear, well-separated paragraphs.
       `;
 
-      if (model === 'grok') {
-        const grokKey = process.env.XAI_API_KEY;
-        console.log("XAI_API_KEY present:", !!grokKey);
-        if (!grokKey) {
-          return res.status(500).json({ error: "XAI_API_KEY is not set in the server environment variables." });
-        }
-
-        const grokResponse = await fetch("https://api.x.ai/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${grokKey.trim()}`
-          },
-          body: JSON.stringify({
-            model: "openai/gpt-oss-120b", 
-            messages: [
-              { role: "system", content: "You are a professional financial advisor." },
-              { role: "user", content: prompt }
-            ],
-            temperature: 0.7
-          })
-        });
-
-        if (!grokResponse.ok) {
-          const errorText = await grokResponse.text();
-          let errorMessage = "Grok API error";
-          try {
-            const errorData = JSON.parse(errorText);
-            errorMessage = errorData.error?.message || errorData.message || JSON.stringify(errorData);
-          } catch (e) {
-            errorMessage = `Grok API error (${grokResponse.status}): ${errorText}`;
-          }
-          console.error("Grok API Error Response:", errorText);
-          throw new Error(errorMessage);
-        }
-
-        const grokResult = await grokResponse.json();
-        return res.json({ text: grokResult.choices[0].message.content });
-      } else {
-        // Default to Gemini
+      if (provider === "gemini") {
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) {
           return res.status(500).json({ 
@@ -114,7 +75,39 @@ async function startServer() {
           contents: [{ parts: [{ text: prompt }] }],
         });
 
-        res.json({ text: response.text || "The AI returned an empty response." });
+        return res.json({ text: response.text || "The AI returned an empty response." });
+      } else {
+        // Default to OpenAI-compatible provider (Groq)
+        const apiKey = process.env.GROQ_API_KEY;
+        if (!apiKey) {
+          return res.status(500).json({ 
+            error: "GROQ_API_KEY is not set in the server environment variables." 
+          });
+        }
+
+        const groqResponse = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey.trim()}`,
+          },
+          body: JSON.stringify({
+            model: "openai/gpt-oss-120b",
+            messages: [
+              { role: "system", content: "You are a professional financial advisor." },
+              { role: "user", content: prompt }
+            ],
+            temperature: 0.7,
+          }),
+        });
+
+        if (!groqResponse.ok) {
+          const errorData = await groqResponse.json();
+          throw new Error(errorData.error?.message || "OpenAI API call failed");
+        }
+
+        const result = await groqResponse.json();
+        return res.json({ text: result.choices[0]?.message?.content || "The AI returned an empty response." });
       }
     } catch (error: any) {
       console.error("Server AI Error:", error);
