@@ -75,7 +75,7 @@ async function startServer() {
             "Authorization": `Bearer ${grokKey.trim()}`
           },
           body: JSON.stringify({
-            model: "grok-2-1212", 
+            model: "openai/gpt-oss-120b", 
             messages: [
               { role: "system", content: "You are a professional financial advisor." },
               { role: "user", content: prompt }
