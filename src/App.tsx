@@ -4,7 +4,7 @@
  */
 
 import { useState, useMemo, useEffect } from 'react';
-import { Page, RetirementData, ProjectionPoint, COUNTRIES, Country } from './types';
+import { Page, RetirementData, ProjectionPoint, COUNTRIES, Country, AIModel } from './types';
 import { RetirementForm } from './components/RetirementForm';
 import { RetirementChart } from './components/RetirementChart';
 import { StrategyGuide } from './components/StrategyGuide';
@@ -42,6 +42,7 @@ export default function App() {
   const [selectedCountry, setSelectedCountry] = useState<Country>(COUNTRIES[0]);
   const [advice, setAdvice] = useState<string | null>(null);
   const [isGeneratingAdvice, setIsGeneratingAdvice] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<AIModel>('gemini');
   const [showGuide, setShowGuide] = useState(false);
 
   const [view, setView] = useState<'chart' | 'table'>('chart');
@@ -275,12 +276,12 @@ export default function App() {
       const retirementPoint = projection.find(p => p.age === data.retirementAge);
       const balanceAtRetirement = retirementPoint ? retirementPoint.balance : 0;
 
-      let result = await getRetirementAdvice(data, selectedCountry, requiredCorpusAtRetirement, balanceAtRetirement, additionalSavings);
+      let result = await getRetirementAdvice(data, selectedCountry, requiredCorpusAtRetirement, balanceAtRetirement, additionalSavings, selectedModel);
       
       // If it failed, try one more time
       if (result.startsWith("Error:")) {
         console.log("First attempt failed, retrying...");
-        result = await getRetirementAdvice(data, selectedCountry, requiredCorpusAtRetirement, balanceAtRetirement, additionalSavings);
+        result = await getRetirementAdvice(data, selectedCountry, requiredCorpusAtRetirement, balanceAtRetirement, additionalSavings, selectedModel);
       }
       
       setAdvice(result);
@@ -338,6 +339,17 @@ export default function App() {
                 {COUNTRIES.map(c => (
                   <option key={c.code} value={c.code}>{c.name} ({c.currencyCode})</option>
                 ))}
+              </select>
+            </div>
+            <div className="flex items-center gap-1.5 bg-zinc-50 border border-zinc-200 rounded-full px-2 md:px-3 py-1.5">
+              <Sparkles size={14} className="text-zinc-400" />
+              <select 
+                value={selectedModel}
+                onChange={(e) => setSelectedModel(e.target.value as AIModel)}
+                className="bg-transparent text-[10px] md:text-xs font-semibold outline-none cursor-pointer pr-1"
+              >
+                <option value="gemini">Gemini</option>
+                <option value="grok">Grok</option>
               </select>
             </div>
             <button 

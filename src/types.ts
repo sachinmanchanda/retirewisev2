@@ -42,6 +42,8 @@ export interface ProjectionPoint {
 
 export type Page = 'retirement' | 'calculators' | 'fd-rd' | 'emi' | 'expenses' | 'learning' | 'sip' | 'goal';
 
+export type AIModel = 'gemini' | 'grok';
+
 export interface AIAdvice {
   summary: string;
   recommendations: string[];

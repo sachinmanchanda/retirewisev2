@@ -24,20 +24,11 @@ async function startServer() {
     res.json({ status: "ok" });
   });
 
-  // Secure Gemini API Endpoint
+  // Secure AI Advisor Endpoint
   app.post("/api/advice", async (req, res) => {
     try {
-      const { data, country, requiredCorpus, balanceAtRetirement, additionalSavings } = req.body;
+      const { data, country, requiredCorpus, balanceAtRetirement, additionalSavings, model = 'gemini' } = req.body;
 
-      const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey) {
-        return res.status(500).json({ 
-          error: "GEMINI_API_KEY is not set in the server environment variables." 
-        });
-      }
-
-      const ai = new GoogleGenAI({ apiKey: apiKey.trim() });
-      
       const prompt = `
         As a professional financial advisor, analyze the following retirement plan and provide concise, actionable advice.
         
@@ -70,12 +61,61 @@ async function startServer() {
         Format the response as Markdown.
       `;
 
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: [{ parts: [{ text: prompt }] }],
-      });
+      if (model === 'grok') {
+        const grokKey = process.env.XAI_API_KEY;
+        console.log("XAI_API_KEY present:", !!grokKey);
+        if (!grokKey) {
+          return res.status(500).json({ error: "XAI_API_KEY is not set in the server environment variables." });
+        }
 
-      res.json({ text: response.text || "The AI returned an empty response." });
+        const grokResponse = await fetch("https://api.x.ai/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${grokKey.trim()}`
+          },
+          body: JSON.stringify({
+            model: "grok-2-1212", 
+            messages: [
+              { role: "system", content: "You are a professional financial advisor." },
+              { role: "user", content: prompt }
+            ],
+            temperature: 0.7
+          })
+        });
+
+        if (!grokResponse.ok) {
+          const errorText = await grokResponse.text();
+          let errorMessage = "Grok API error";
+          try {
+            const errorData = JSON.parse(errorText);
+            errorMessage = errorData.error?.message || errorData.message || JSON.stringify(errorData);
+          } catch (e) {
+            errorMessage = `Grok API error (${grokResponse.status}): ${errorText}`;
+          }
+          console.error("Grok API Error Response:", errorText);
+          throw new Error(errorMessage);
+        }
+
+        const grokResult = await grokResponse.json();
+        return res.json({ text: grokResult.choices[0].message.content });
+      } else {
+        // Default to Gemini
+        const apiKey = process.env.GEMINI_API_KEY;
+        if (!apiKey) {
+          return res.status(500).json({ 
+            error: "GEMINI_API_KEY is not set in the server environment variables." 
+          });
+        }
+
+        const ai = new GoogleGenAI({ apiKey: apiKey.trim() });
+        const response = await ai.models.generateContent({
+          model: "gemini-3-flash-preview",
+          contents: [{ parts: [{ text: prompt }] }],
+        });
+
+        res.json({ text: response.text || "The AI returned an empty response." });
+      }
     } catch (error: any) {
       console.error("Server AI Error:", error);
       res.status(500).json({ error: error.message || "Internal Server Error" });
