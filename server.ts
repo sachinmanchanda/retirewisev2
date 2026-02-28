@@ -27,7 +27,7 @@ async function startServer() {
   // Secure Gemini API Endpoint
   app.post("/api/advice", async (req, res) => {
     try {
-      const { data, country, requiredCorpus, additionalSavings } = req.body;
+      const { data, country, requiredCorpus, balanceAtRetirement, additionalSavings } = req.body;
 
       const apiKey = process.env.GEMINI_API_KEY;
       if (!apiKey) {
@@ -56,7 +56,9 @@ async function startServer() {
         Life Expectancy: ${data.lifeExpectancy}
         
         Calculated Metrics:
+        Projected Balance at Retirement (at age ${data.retirementAge}): ${country.currencySymbol}${balanceAtRetirement.toLocaleString()}
         Estimated Required Corpus at Retirement: ${country.currencySymbol}${requiredCorpus.toLocaleString()}
+        Savings Shortfall: ${country.currencySymbol}${(requiredCorpus - balanceAtRetirement).toLocaleString()}
         Additional Monthly Savings Needed (Fixed): ${country.currencySymbol}${additionalSavings.fixed.toLocaleString()}
         Additional Monthly Savings Needed (Step-up at ${data.stepUpRate}% annual growth): ${country.currencySymbol}${additionalSavings.stepUp.toLocaleString()}
         

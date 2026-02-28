@@ -272,12 +272,15 @@ export default function App() {
   const handleGetAdvice = async () => {
     setIsGeneratingAdvice(true);
     try {
-      let result = await getRetirementAdvice(data, selectedCountry, requiredCorpusAtRetirement, additionalSavings);
+      const retirementPoint = projection.find(p => p.age === data.retirementAge);
+      const balanceAtRetirement = retirementPoint ? retirementPoint.balance : 0;
+
+      let result = await getRetirementAdvice(data, selectedCountry, requiredCorpusAtRetirement, balanceAtRetirement, additionalSavings);
       
       // If it failed, try one more time
       if (result.startsWith("Error:")) {
         console.log("First attempt failed, retrying...");
-        result = await getRetirementAdvice(data, selectedCountry, requiredCorpusAtRetirement, additionalSavings);
+        result = await getRetirementAdvice(data, selectedCountry, requiredCorpusAtRetirement, balanceAtRetirement, additionalSavings);
       }
       
       setAdvice(result);

@@ -4,6 +4,7 @@ export async function getRetirementAdvice(
   data: RetirementData, 
   country: Country, 
   requiredCorpus: number,
+  balanceAtRetirement: number,
   additionalSavings: { fixed: number; stepUp: number }
 ) {
   try {
@@ -16,6 +17,7 @@ export async function getRetirementAdvice(
         data,
         country,
         requiredCorpus,
+        balanceAtRetirement,
         additionalSavings,
       }),
     });
